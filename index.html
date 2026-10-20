@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Cycle Loop 360 — Smart E-Waste Collection, Tracking, Reuse &amp; Recycling Platform</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17" async defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    if (window.tailwind) {
+      window.tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              forest: {
+                DEFAULT: '#14532D',
+                50: '#F0FDF4',
+                100: '#DCFCE7',
+                200: '#BBF7D0',
+                600: '#166534',
+                700: '#14532D',
+                800: '#0F3F22',
+                900: '#0A2916'
+              },
+              ecowhite: '#F8FAF5',
+              charcoal: {
+                DEFAULT: '#263238',
+                light: '#37474F',
+                muted: '#546E7A'
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+            }
+          }
+        }
+      };
+    }
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-ecowhite text-charcoal min-h-screen flex flex-col">
+  <!-- Demo Mode Global Top Banner -->
+  <div id="demo-banner" style="display:none;">
+    <div class="app-container" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.5rem;">
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <span style="background:#14532D;color:#FFFFFF;font-weight:700;padding:0.12rem 0.5rem;border-radius:4px;letter-spacing:0.04em;font-size:0.7rem;">DEMO MODE</span>
+        <span>Local-only accounts &amp; seeded sample records (persisted in browser storage &amp; IndexedDB). Not connected to a live multi-user backend.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.6rem;">
+        <button type="button" onclick="openDemoAccountsModal()" style="background:#37474F;color:#FFFFFF;border:1px solid #546E7A;padding:0.18rem 0.6rem;border-radius:5px;font-size:0.74rem;font-weight:600;cursor:pointer;">
+          Demo Accounts &amp; Quick Switch
+        </button>
+        <button type="button" onclick="openWalkthroughModal()" style="background:#14532D;color:#FFFFFF;border:1px solid #166534;padding:0.18rem 0.6rem;border-radius:5px;font-size:0.74rem;font-weight:600;cursor:pointer;">
+          5-Min Professor Demo Guide
+        </button>
+        <button type="button" onclick="confirmResetDemoData()" style="background:transparent;color:#CBD5E1;border:1px solid #546E7A;padding:0.18rem 0.6rem;border-radius:5px;font-size:0.74rem;cursor:pointer;">
+          Reset Demo Data
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Main Navigation Header -->
+  <header style="position:sticky;top:0;z-index:40;background:rgba(248,250,245,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);box-shadow:0 2px 10px rgba(38,50,56,0.04);">
+    <div class="app-container" style="display:flex;align-items:center;justify-content:space-between;height:66px;gap:0.75rem;">
+      <a href="#/" onclick="navigateTo('/')" style="display:flex;align-items:center;gap:0.65rem;text-decoration:none;color:var(--charcoal);">
+        <div style="width:38px;height:38px;border-radius:10px;background:#14532D;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.05rem;box-shadow:0 2px 5px rgba(20,83,45,0.25);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12"/><path d="m14 16-3 3 3 3"/><path d="M8.293 13.596 7.196 9.5 3.1 10.598"/><path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843"/><path d="m13.378 9.633 4.096 1.098 1.097-4.096"/></svg>
+        </div>
+        <div>
+          <div style="font-weight:800;font-size:1.05rem;letter-spacing:-0.02em;color:#14532D;line-height:1.15;">E-Cycle Loop 360</div>
+          <div style="font-size:0.69rem;color:#526066;font-weight:500;">Collect · Track · Renew · Reuse · Recycle</div>
+        </div>
+      </a>
+
+      <nav id="desktop-nav-links" class="desktop-nav" aria-label="Main Navigation" style="display:flex;align-items:center;gap:0.2rem;flex-wrap:wrap;"></nav>
+
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <div id="nav-auth-area" style="display:flex;align-items:center;gap:0.5rem;"></div>
+        <button type="button" id="mobile-menu-toggle" class="mobile-menu-btn ec-btn-secondary" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu" style="padding:0.45rem 0.65rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- User-Friendly 1-Click Role Persona Bar -->
+    <div id="quick-role-bar" style="display:none;"></div>
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav-drawer" class="mobile-nav-drawer" style="display:none;background:#FFFFFF;border-bottom:1px solid var(--border);padding:0.85rem 1.25rem;"></div>
+  </header>
+
+  <!-- Main Content Outlet -->
+  <main id="app-main" style="flex:1;padding:1.5rem 0 3rem 0;"></main>
+
+  <!-- Toast Container -->
+  <div id="toast-container" aria-live="polite" style="position:fixed;bottom:1.25rem;right:1.25rem;z-index:80;display:flex;flex-direction:column;gap:0.5rem;max-width:380px;"></div>
+
+  <!-- Shared Modal Host -->
+  <div id="modal-root"></div>
+
+  <!-- Camera Capture Modal Host -->
+  <div id="camera-modal-root"></div>
+
+  <!-- Footer -->
+  <footer style="background:#263238;color:#E2E8F0;padding:2.75rem 0 2rem 0;border-top:3px solid #14532D;margin-top:auto;">
+    <div class="app-container">
+      <div class="ec-grid-3" style="margin-bottom:2rem;">
+        <div>
+          <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.65rem;">
+            <span style="display:inline-flex;width:28px;height:28px;border-radius:7px;background:#14532D;color:#FFF;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;">E</span>
+            <span style="font-weight:700;font-size:1.05rem;color:#FFFFFF;">E-Cycle Loop 360</span>
+          </div>
+          <p style="font-size:0.84rem;color:#CBD5E1;margin:0 0 0.75rem 0;">
+            A circular-economy platform managing the full lifecycle of electronic items: registration, collection, condition assessment, second-life reuse/repair, and responsible material recovery.
+          </p>
+          <div style="font-size:0.76rem;color:#94A3B8;background:#1E272C;padding:0.6rem 0.75rem;border-radius:8px;border:1px solid #37474F;">
+            <strong>Safety &amp; Regulatory Note:</strong> Real-world e-waste disposal must always use government-authorised e-waste handlers and PROs. Never dispose of lithium-ion batteries or hazardous components in household bins.
+          </div>
+        </div>
+        <div>
+          <div style="font-weight:700;color:#FFFFFF;font-size:0.9rem;margin-bottom:0.65rem;">Platform Modules</div>
+          <ul style="list-style:none;padding:0;margin:0;display:grid;gap:0.4rem;font-size:0.84rem;">
+            <li><a href="#/submit" onclick="navigateTo('/submit')" style="color:#CBD5E1;text-decoration:none;">Submit E-Waste (Camera &amp; Pickup)</a></li>
+            <li><a href="#/track" onclick="navigateTo('/track')" style="color:#CBD5E1;text-decoration:none;">Digital E-Waste Passport &amp; QR Lookup</a></li>
+            <li><a href="#/market" onclick="navigateTo('/market')" style="color:#CBD5E1;text-decoration:none;">Reboot Market (Reuse, Donate, Repair)</a></li>
+            <li><a href="#/centres" onclick="navigateTo('/centres')" style="color:#CBD5E1;text-decoration:none;">Collection &amp; Repair Centres Directory</a></li>
+            <li><a href="#/how-it-works" onclick="navigateTo('/how-it-works')" style="color:#CBD5E1;text-decoration:none;">Circular Economy Methodology &amp; Demo Script</a></li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-weight:700;color:#FFFFFF;font-size:0.9rem;margin-bottom:0.65rem;">Role Workspaces (Demo Mode)</div>
+          <ul style="list-style:none;padding:0;margin:0;display:grid;gap:0.4rem;font-size:0.84rem;">
+            <li><a href="#/dashboard" onclick="navigateTo('/dashboard')" style="color:#CBD5E1;text-decoration:none;">Resident / User Dashboard (`/dashboard`)</a></li>
+            <li><a href="#/tasks" onclick="navigateTo('/tasks')" style="color:#CBD5E1;text-decoration:none;">Worker &amp; Partner Assigned Tasks (`/tasks`)</a></li>
+            <li><a href="#/admin" onclick="navigateTo('/admin')" style="color:#CBD5E1;text-decoration:none;">Administrator Operations Queue (`/admin`)</a></li>
+            <li><a href="#/profile" onclick="navigateTo('/profile')" style="color:#CBD5E1;text-decoration:none;">Role Profile &amp; Privacy Settings (`/profile`)</a></li>
+            <li><a href="#/login" onclick="navigateTo('/login')" style="color:#86EFAC;font-weight:600;text-decoration:none;font-size:0.84rem;">Sign In / Switch Role Account →</a></li>
+          </ul>
+        </div>
+      </div>
+      <div style="border-top:1px solid #37474F;padding-top:1rem;display:flex;flex-wrap:wrap;justify-content:space-between;gap:0.5rem;font-size:0.78rem;color:#94A3B8;">
+        <span>E-Cycle Loop 360 (Version 2: Camera, Login &amp; Role-Based Profiles) — College E-Waste Management MVP</span>
+        <span>All seeded records are explicitly labelled DEMO DATA. Timeline entries reflect platform logs, not external certification.</span>
+      </div>
+    </div>
+  </footer>
+  <script src="js/app.js"></script>
+</body>
+</html>
